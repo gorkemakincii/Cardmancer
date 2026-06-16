@@ -75,12 +75,7 @@ export async function registerHandler(req: Request, res: Response): Promise<void
       return;
     }
     console.error('[auth] register error', e);
-    // TEMP DEBUG: expose the real cause to diagnose the deploy; revert after.
-    res.status(500).json({
-      error: 'Kayıt sırasında bir hata oluştu.',
-      debug: (e as Error)?.message,
-      code: (e as { code?: string })?.code,
-    });
+    res.status(500).json({ error: 'Kayıt sırasında bir hata oluştu.' });
   }
 }
 
