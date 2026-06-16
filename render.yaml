@@ -1,0 +1,22 @@
+# Render Blueprint — Power Hungry Pets backend (server)
+# Frontend is deployed separately on Vercel (see DEPLOY.md).
+services:
+  - type: web
+    name: power-hungry-pets-server
+    runtime: node
+    plan: free
+    rootDir: server
+    # --include=dev ensures typescript/prisma (devDeps) are present for the build,
+    # even if Render sets NODE_ENV=production.
+    buildCommand: npm install --include=dev && npx prisma generate && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false # paste your Neon connection string in the Render dashboard
+      - key: JWT_SECRET
+        generateValue: true # Render generates a strong random secret
+      - key: CLIENT_URL
+        sync: false # set to your Vercel URL (optional; *.vercel.app is already allowed)
+      - key: NODE_VERSION
+        value: "20"

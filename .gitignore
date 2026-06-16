@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment / secrets — never commit these
+.env
+.env.local
+.env.*.local
+
+# Local agent tooling (not needed for deploy; may contain keys)
+.agent/
+
+# Editor / OS noise
+.DS_Store
+*.log

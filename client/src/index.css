@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-white min-h-screen;
+    /* Vignette: subtly brighter at the center, darkening toward the corners */
+    background-color: #1e1b4b;
+    background-image: radial-gradient(ellipse at center, #2a2660 0%, #1e1b4b 52%, #13102e 100%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-primary hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent border-2 border-brand-secondary text-brand-secondary hover:bg-brand-secondary hover:text-brand-dark font-bold py-3 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95;
+  }
+}
+
+/* Gentle "breathing" glow — used on the active call-to-action bar */
+@keyframes breathe {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px 3px rgba(124, 58, 237, 0.55);
+  }
+}
+
+.animate-breathe {
+  animation: breathe 2.2s ease-in-out infinite;
+}
