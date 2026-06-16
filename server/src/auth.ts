@@ -4,8 +4,11 @@ import type { Request, Response } from 'express';
 import { prisma } from './db';
 
 // Read lazily so dotenv has loaded by the time these run.
+// No insecure fallback: a missing secret must never silently enable forgeable tokens.
 function secret(): string {
-  return process.env.JWT_SECRET || 'dev-secret-change-me';
+  const s = process.env.JWT_SECRET;
+  if (!s) throw new Error('JWT_SECRET environment variable is required');
+  return s;
 }
 
 const TOKEN_TTL = '30d';

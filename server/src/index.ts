@@ -9,6 +9,12 @@ import { executeCardAction } from './cardActions';
 import { prisma } from './db';
 import { registerHandler, loginHandler, meHandler, verifyToken } from './auth';
 
+// Fail fast: refuse to start without a JWT secret (no insecure fallback).
+if (!process.env.JWT_SECRET) {
+  console.error('[FATAL] JWT_SECRET environment variable is required. Set it in your environment (.env locally, dashboard in production).');
+  process.exit(1);
+}
+
 const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 3001;
