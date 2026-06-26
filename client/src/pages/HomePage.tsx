@@ -11,6 +11,59 @@ import type { GameState } from '../types';
 
 type Step = 'name' | 'action' | 'join';
 
+// ── Inline icons (no emoji — keeps the neo-arcade look deliberate) ──────────────
+
+const ico = 'shrink-0';
+
+function PawMark({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+      <ellipse cx="6.5" cy="9" rx="2" ry="2.6" />
+      <ellipse cx="11" cy="6.6" rx="2" ry="2.7" />
+      <ellipse cx="15.8" cy="7.2" rx="2" ry="2.6" />
+      <ellipse cx="19" cy="11.2" rx="1.8" ry="2.3" />
+      <path d="M12.3 11.4c2.7 0 5 1.8 5.4 4.3.3 2-1.2 3.6-3.2 3.6-.9 0-1.5-.3-2.2-.3s-1.3.3-2.2.3c-2 0-3.5-1.6-3.2-3.6.4-2.5 2.7-4.3 5.4-4.3Z" />
+    </svg>
+  );
+}
+function PlusIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" className={ico} fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+function KeyIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" className={ico} fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="8" cy="8" r="4" />
+      <path d="m10.8 10.8 7.2 7.2M16 16l2-2M19 13l1.5 1.5" />
+    </svg>
+  );
+}
+function BookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" className={ico} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H12v16H5.5A2.5 2.5 0 0 0 3 21.5ZM21 5.5A2.5 2.5 0 0 0 18.5 3H12v16h6.5a2.5 2.5 0 0 1 2.5 2.5Z" />
+    </svg>
+  );
+}
+function UserIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" className={ico} fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" />
+    </svg>
+  );
+}
+function ArrowIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" className={ico} fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 export default function HomePage() {
   const navigate = useNavigate();
   const user = useAuth();
@@ -81,18 +134,20 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4">
-      <div className="text-center max-w-md w-full">
+    <div className="arcade-stage min-h-screen flex flex-col items-center justify-center px-4 py-10 font-ui text-arcade-cream">
+      <div className="w-full max-w-md">
 
         {/* Account bar */}
-        <div className="flex justify-center mb-5">
+        <div className="flex justify-center mb-7">
           {user ? (
-            <div className="flex items-center gap-3 bg-brand-card border border-purple-700 rounded-full pl-4 pr-2 py-1.5">
-              <span className="text-sm text-white font-medium">👤 {user.username}</span>
-              <span className="text-xs text-purple-400">🏆 {user.wins} · 🎮 {user.totalGames}</span>
+            <div className="flex items-center gap-3 bg-arcade-cream text-arcade-ink border-[3px] border-arcade-ink rounded-full pl-3.5 pr-2 py-1.5 shadow-hard-sm">
+              <span className="flex items-center gap-1.5 text-sm font-bold"><UserIcon /> {user.username}</span>
+              <span className="text-xs font-semibold tabular-nums px-2 py-0.5 rounded-full bg-arcade-sun border-2 border-arcade-ink">
+                {user.wins}G · {user.totalGames}O
+              </span>
               <button
                 onClick={handleLogout}
-                className="text-xs text-purple-400 hover:text-white border border-purple-700 hover:border-purple-400 rounded-full px-2.5 py-0.5 transition-colors"
+                className="text-xs font-bold uppercase tracking-wide bg-arcade-ink text-arcade-cream rounded-full px-2.5 py-1 hover:bg-arcade-coral hover:text-arcade-ink transition-colors"
               >
                 Çıkış
               </button>
@@ -100,110 +155,134 @@ export default function HomePage() {
           ) : (
             <button
               onClick={() => { playClick(); setShowAuth(true); }}
-              className="text-sm text-purple-300 hover:text-brand-secondary border border-purple-700 hover:border-brand-secondary rounded-full px-4 py-1.5 transition-colors"
+              className="btn-ghost-arcade inline-flex items-center gap-2 text-sm px-4 py-1.5"
             >
-              👤 Giriş Yap / Kayıt Ol
+              <UserIcon /> Giriş yap / Kayıt ol
             </button>
           )}
         </div>
 
-        <div className="mb-2 text-6xl">🐾</div>
-        <h1 className="text-5xl font-bold text-brand-secondary font-game">Power Hungry</h1>
-        <h2 className="text-5xl font-bold text-white mb-8 font-game">Pets</h2>
+        {/* Hero */}
+        <div className="text-center mb-9">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-arcade-sun border-[3px] border-arcade-ink shadow-hard mb-5 -rotate-3">
+            <PawMark className="w-9 h-9 text-arcade-ink" />
+          </div>
+          <p className="font-ui text-xs font-semibold uppercase tracking-[0.35em] text-arcade-sun mb-2">
+            Gerçek zamanlı kart oyunu
+          </p>
+          <h1 className="title-arcade text-arcade-cream text-6xl sm:text-7xl">CARD</h1>
+          <h1 className="title-arcade text-arcade-coral text-6xl sm:text-7xl mt-1">MANCER</h1>
+        </div>
 
-        {step === 'name' && !user && (
-          <form onSubmit={handleNameSubmit} className="space-y-4">
-            <p className="text-purple-300 text-lg mb-6">Misafir olarak oyna — adını gir</p>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Kullanıcı adın..."
-              maxLength={20}
-              autoFocus
-              className="w-full px-4 py-3 rounded-xl bg-brand-card border border-purple-600 text-white placeholder-purple-400 focus:outline-none focus:border-brand-primary text-lg text-center"
-            />
-            <button
-              type="submit"
-              disabled={!username.trim()}
-              className="btn-primary w-full text-lg disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Devam Et →
-            </button>
-          </form>
-        )}
+        {/* Card panel — the interactive flow lives on a cream "sticker" */}
+        <div className="bg-arcade-cream text-arcade-ink border-[3px] border-arcade-ink rounded-[22px] shadow-hard p-6 sm:p-7">
 
-        {step === 'action' && (
-          <div className="space-y-4">
-            <p className="text-purple-300 mb-6">
-              Hoş geldin, <span className="text-brand-secondary font-bold">{playerName}</span>!
-            </p>
-            <button
-              onClick={handleCreateRoom}
-              disabled={loading}
-              className="btn-primary w-full text-lg disabled:opacity-50"
-            >
-              {loading ? 'Oda kuruluyor...' : '🏠 Yeni Oda Kur'}
-            </button>
-            <button
-              onClick={() => { playClick(); setStep('join'); }}
-              disabled={loading}
-              className="btn-secondary w-full text-lg disabled:opacity-50"
-            >
-              🔑 Oda Koduyla Katıl
-            </button>
-            {!user && (
+          {step === 'name' && !user && (
+            <form onSubmit={handleNameSubmit} className="space-y-4">
+              <label htmlFor="guest-name" className="block font-display font-extrabold text-xl">
+                Misafir olarak oyna
+              </label>
+              <p className="text-sm font-medium opacity-70 -mt-2">Bir takma ad seç, hesap gerekmez.</p>
+              <input
+                id="guest-name"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Takma adın…"
+                maxLength={20}
+                autoFocus
+                className="input-arcade w-full px-4 py-3 text-lg text-center font-semibold"
+              />
               <button
-                onClick={() => { playClick(); setStep('name'); }}
-                className="text-purple-400 hover:text-purple-300 text-sm transition-colors"
+                type="submit"
+                disabled={!username.trim()}
+                className="btn-arcade w-full py-3.5 text-lg"
               >
-                ← Adı değiştir
+                Devam et <ArrowIcon />
               </button>
-            )}
-          </div>
-        )}
+            </form>
+          )}
 
-        {step === 'join' && (
-          <form onSubmit={handleJoinSubmit} className="space-y-4">
-            <p className="text-purple-300 mb-6">Oda kodunu gir</p>
-            <input
-              type="text"
-              value={roomCodeInput}
-              onChange={(e) => setRoomCodeInput(e.target.value.toUpperCase())}
-              placeholder="XXXX"
-              maxLength={4}
-              autoFocus
-              className="w-full px-4 py-4 rounded-xl bg-brand-card border border-purple-600 text-white placeholder-purple-400 focus:outline-none focus:border-brand-primary text-3xl text-center tracking-[0.5em] font-mono uppercase"
-            />
-            <button
-              type="submit"
-              disabled={roomCodeInput.trim().length !== 4 || loading}
-              className="btn-primary w-full text-lg disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Katılınıyor...' : 'Odaya Katıl'}
-            </button>
-            <button
-              type="button"
-              onClick={() => { playClick(); setStep('action'); setError(''); }}
-              className="text-purple-400 hover:text-purple-300 text-sm transition-colors"
-            >
-              ← Geri
-            </button>
-          </form>
-        )}
+          {step === 'action' && (
+            <div className="space-y-4">
+              <p className="font-display font-extrabold text-xl">
+                Hazırsın, <span className="text-arcade-coral">{playerName}</span>
+              </p>
+              <p className="text-sm font-medium opacity-70 -mt-2">Yeni bir masa kur ya da kodla bir masaya otur.</p>
+              <button
+                onClick={handleCreateRoom}
+                disabled={loading}
+                className="btn-arcade w-full py-3.5 text-lg"
+              >
+                <PlusIcon /> {loading ? 'Oda kuruluyor…' : 'Oda kur'}
+              </button>
+              <button
+                onClick={() => { playClick(); setStep('join'); }}
+                disabled={loading}
+                className="btn-arcade btn-arcade--teal w-full py-3.5 text-lg"
+              >
+                <KeyIcon /> Oda koduyla katıl
+              </button>
+              {!user && (
+                <button
+                  onClick={() => { playClick(); setStep('name'); }}
+                  className="block mx-auto text-sm font-semibold underline decoration-2 underline-offset-2 opacity-70 hover:opacity-100 transition-opacity"
+                >
+                  ← Adı değiştir
+                </button>
+              )}
+            </div>
+          )}
 
-        {error && (
-          <div className="mt-4 px-4 py-3 rounded-lg bg-red-900/40 border border-red-500 text-red-300 text-sm">
-            {error}
-          </div>
-        )}
+          {step === 'join' && (
+            <form onSubmit={handleJoinSubmit} className="space-y-4">
+              <label htmlFor="room-code" className="block font-display font-extrabold text-xl">
+                Oda kodunu gir
+              </label>
+              <p className="text-sm font-medium opacity-70 -mt-2">Masayı kuran kişiden 4 haneli kodu al.</p>
+              <input
+                id="room-code"
+                type="text"
+                value={roomCodeInput}
+                onChange={(e) => setRoomCodeInput(e.target.value.toUpperCase())}
+                placeholder="XXXX"
+                maxLength={4}
+                autoFocus
+                className="input-arcade w-full px-4 py-4 text-4xl text-center tracking-[0.4em] font-bold uppercase"
+              />
+              <button
+                type="submit"
+                disabled={roomCodeInput.trim().length !== 4 || loading}
+                className="btn-arcade w-full py-3.5 text-lg"
+              >
+                {loading ? 'Katılınıyor…' : 'Masaya otur'}
+              </button>
+              <button
+                type="button"
+                onClick={() => { playClick(); setStep('action'); setError(''); }}
+                className="block mx-auto text-sm font-semibold underline decoration-2 underline-offset-2 opacity-70 hover:opacity-100 transition-opacity"
+              >
+                ← Geri
+              </button>
+            </form>
+          )}
 
-        <button
-          onClick={() => { playClick(); setShowHowTo(true); }}
-          className="mt-8 text-purple-400 hover:text-brand-secondary text-sm inline-flex items-center gap-1.5 transition-colors"
-        >
-          <span>📖</span> Nasıl Oynanır?
-        </button>
+          {error && (
+            <div className="mt-4 px-4 py-3 rounded-xl bg-arcade-coral/25 border-[3px] border-arcade-ink text-arcade-ink text-sm font-semibold">
+              {error}
+            </div>
+          )}
+        </div>
+
+        {/* How to play */}
+        <div className="flex justify-center mt-7">
+          <button
+            onClick={() => { playClick(); setShowHowTo(true); }}
+            className="btn-ghost-arcade inline-flex items-center gap-2 text-sm px-4 py-2"
+          >
+            <BookIcon /> Nasıl oynanır?
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>

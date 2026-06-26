@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🐾 Power Hungry Pets
+# 🐾 Cardmancer
 
 **A real-time, multiplayer card game for 2–6 players — a pet-themed take on the classic _Love Letter_.**
 
@@ -38,7 +38,7 @@ Create a room, share the code, and outwit your friends through bluffing, deducti
 
 ## 🎯 About
 
-**Power Hungry Pets** is a web-based, real-time multiplayer card game inspired by the deduction classic _Love Letter_.
+**Cardmancer** is a web-based, real-time multiplayer card game inspired by the deduction classic _Love Letter_.
 Each round, you hold a single secret card. On your turn you draw a second card and play one of the two — triggering
 its effect. The goal: be the last pet standing, or hold the highest card when the deck runs out.
 

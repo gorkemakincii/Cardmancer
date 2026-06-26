@@ -171,7 +171,7 @@ function startReconnectTimer(roomCode: string, player: Player) {
 }
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', message: 'Power Hungry Pets server is running!' });
+  res.json({ status: 'ok', message: 'Cardmancer server is running!' });
 });
 
 // ── AUTH ROUTES ───────────────────────────────────────────────────────────────
