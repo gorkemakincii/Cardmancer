@@ -13,6 +13,21 @@ function isEmojiOnly(s: string): boolean {
   return [...t].length <= 6;
 }
 
+function ChatIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v9a1.5 1.5 0 0 1-1.5 1.5H9l-4 3.5V16H5.5A1.5 1.5 0 0 1 4 14.5Z" />
+    </svg>
+  );
+}
+function SendIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 12h13M11 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 export function ChatPanel({ roomCode, mySocketId }: { roomCode: string; mySocketId: string }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -61,19 +76,19 @@ export function ChatPanel({ roomCode, mySocketId }: { roomCode: string; mySocket
   }
 
   return (
-    <>
+    <div className="font-ui">
       {/* Toggle button — bottom-left (global mute lives bottom-right) */}
       <button
         onClick={() => { playClick(); setOpen(o => !o); }}
         title="Sohbet"
-        className="fixed bottom-4 left-4 z-50 w-10 h-10 rounded-full bg-brand-card border border-purple-700 hover:border-purple-400 hover:bg-purple-900/50 flex items-center justify-center text-lg shadow-lg transition-all select-none"
+        className="fixed bottom-4 left-4 z-50 w-12 h-12 rounded-xl bg-arcade-coral text-arcade-ink border-[3px] border-arcade-ink shadow-hard-sm flex items-center justify-center transition-transform hover:-translate-y-0.5 select-none"
       >
-        💬
+        <ChatIcon />
         <AnimatePresence>
           {unread > 0 && (
             <motion.span
               initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-              className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center"
+              className="absolute -top-2 -right-2 min-w-[20px] h-[20px] px-1 rounded-full bg-arcade-ink text-arcade-cream border-2 border-arcade-cream text-[10px] font-bold flex items-center justify-center"
             >
               {unread > 9 ? '9+' : unread}
             </motion.span>
@@ -88,15 +103,15 @@ export function ChatPanel({ roomCode, mySocketId }: { roomCode: string; mySocket
             animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
             exit={{ opacity: 0, x: -20, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 320, damping: 30 }}
-            className="fixed bottom-16 left-4 z-50 w-[88vw] max-w-xs h-[60vh] max-h-[26rem] bg-brand-card border border-purple-600 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed bottom-20 left-4 z-50 w-[88vw] max-w-xs h-[60vh] max-h-[26rem] bg-arcade-cream text-arcade-ink border-[3px] border-arcade-ink rounded-[20px] shadow-hard flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-purple-700 shrink-0">
-              <span className="text-white font-semibold text-sm flex items-center gap-1.5">💬 Sohbet</span>
+            <div className="flex items-center justify-between px-4 py-2.5 border-b-[3px] border-arcade-ink shrink-0">
+              <span className="font-display font-extrabold text-sm flex items-center gap-2"><ChatIcon /> Sohbet</span>
               <button
                 onClick={() => { playClick(); setOpen(false); }}
                 aria-label="Kapat"
-                className="text-purple-400 hover:text-white w-7 h-7 flex items-center justify-center rounded-lg hover:bg-purple-900/50 transition-colors"
+                className="w-7 h-7 flex items-center justify-center rounded-lg bg-arcade-ink text-arcade-cream hover:bg-arcade-coral hover:text-arcade-ink transition-colors text-sm font-bold"
               >
                 ✕
               </button>
@@ -105,8 +120,8 @@ export function ChatPanel({ roomCode, mySocketId }: { roomCode: string; mySocket
             {/* Messages */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-2 space-y-1.5">
               {messages.length === 0 && (
-                <p className="text-purple-500 text-xs text-center py-8 px-2">
-                  Henüz mesaj yok. Bir şeyler yaz ya da aşağıdan hızlı emoji gönder! 🐾
+                <p className="text-xs text-center py-8 px-2 font-medium opacity-50">
+                  Henüz mesaj yok. Bir şeyler yaz ya da aşağıdan hızlı emoji gönder.
                 </p>
               )}
               {messages.map((m, i) => {
@@ -114,13 +129,15 @@ export function ChatPanel({ roomCode, mySocketId }: { roomCode: string; mySocket
                 const emojiOnly = isEmojiOnly(m.message);
                 return (
                   <div key={i} className={`flex flex-col ${mine ? 'items-end' : 'items-start'}`}>
-                    {!mine && <span className="text-purple-400 text-[10px] px-1 mb-0.5">{m.username}</span>}
+                    {!mine && <span className="text-[10px] px-1 mb-0.5 font-semibold opacity-50">{m.username}</span>}
                     <div
                       className={
                         emojiOnly
                           ? 'text-3xl px-1 leading-none'
-                          : `px-2.5 py-1.5 rounded-xl text-sm max-w-[85%] break-words ${
-                              mine ? 'bg-brand-primary text-white' : 'bg-purple-900/50 text-purple-100'
+                          : `px-2.5 py-1.5 rounded-xl text-sm font-medium max-w-[85%] break-words border-2 ${
+                              mine
+                                ? 'bg-arcade-coral text-arcade-ink border-arcade-ink'
+                                : 'bg-white text-arcade-ink border-arcade-ink/15'
                             }`
                       }
                     >
@@ -132,12 +149,12 @@ export function ChatPanel({ roomCode, mySocketId }: { roomCode: string; mySocket
             </div>
 
             {/* Quick emojis */}
-            <div className="px-2 py-1.5 border-t border-purple-800 grid grid-cols-6 gap-0.5 shrink-0">
+            <div className="px-2 py-1.5 border-t-2 border-arcade-ink/15 grid grid-cols-6 gap-0.5 shrink-0">
               {QUICK_EMOJIS.map(e => (
                 <button
                   key={e}
                   onClick={() => sendEmoji(e)}
-                  className="text-xl h-8 flex items-center justify-center rounded-lg hover:bg-purple-900/50 hover:scale-110 active:scale-95 transition-transform"
+                  className="text-xl h-8 flex items-center justify-center rounded-lg hover:bg-arcade-sun/40 active:scale-95 transition-transform"
                 >
                   {e}
                 </button>
@@ -145,26 +162,27 @@ export function ChatPanel({ roomCode, mySocketId }: { roomCode: string; mySocket
             </div>
 
             {/* Input */}
-            <form onSubmit={handleSubmit} className="p-2 border-t border-purple-700 flex gap-2 shrink-0">
+            <form onSubmit={handleSubmit} className="p-2 border-t-[3px] border-arcade-ink flex gap-2 shrink-0">
               <input
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 maxLength={200}
-                placeholder="Mesaj yaz..."
-                className="flex-1 min-w-0 px-3 py-2 rounded-lg bg-brand-dark border border-purple-700 text-white placeholder-purple-500 text-sm focus:outline-none focus:border-brand-primary"
+                placeholder="Mesaj yaz…"
+                className="input-arcade flex-1 min-w-0 px-3 py-2 text-sm font-medium"
+                style={{ boxShadow: '3px 3px 0 0 #14110F' }}
               />
               <button
                 type="submit"
                 disabled={!input.trim()}
                 aria-label="Gönder"
-                className="px-3 py-2 rounded-lg bg-brand-primary text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-purple-700 transition-colors"
+                className="px-3 rounded-xl bg-arcade-coral text-arcade-ink border-[3px] border-arcade-ink font-bold disabled:opacity-40 disabled:cursor-not-allowed hover:-translate-y-0.5 transition-transform flex items-center justify-center"
               >
-                ➤
+                <SendIcon />
               </button>
             </form>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 }

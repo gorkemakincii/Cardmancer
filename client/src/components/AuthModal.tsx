@@ -37,8 +37,7 @@ export function AuthModal({ onClose, onSuccess }: { onClose: () => void; onSucce
     }
   }
 
-  const inputCls =
-    'w-full px-4 py-2.5 rounded-xl bg-brand-dark border border-purple-700 text-white placeholder-purple-500 focus:outline-none focus:border-brand-primary text-sm';
+  const inputCls = 'input-arcade w-full px-4 py-2.5 text-sm font-semibold';
 
   return (
     <motion.div
@@ -46,7 +45,7 @@ export function AuthModal({ onClose, onSuccess }: { onClose: () => void; onSucce
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 px-4"
+      className="fixed inset-0 bg-arcade-ink/85 backdrop-blur-sm flex items-center justify-center z-50 px-4 font-ui"
     >
       <motion.div
         initial={{ scale: 0.92, y: 24 }}
@@ -54,19 +53,21 @@ export function AuthModal({ onClose, onSuccess }: { onClose: () => void; onSucce
         exit={{ scale: 0.92, y: 24 }}
         transition={{ type: 'spring', stiffness: 320, damping: 28 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-brand-card border border-purple-600 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden"
+        className="bg-arcade-cream text-arcade-ink border-[3px] border-arcade-ink rounded-[22px] w-full max-w-sm shadow-hard overflow-hidden"
       >
-        {/* Tabs */}
-        <div className="flex border-b border-purple-700">
+        {/* Segmented tabs */}
+        <div className="flex gap-2 p-3 border-b-[3px] border-arcade-ink">
           {(['login', 'register'] as Mode[]).map((m) => (
             <button
               key={m}
               onClick={() => switchMode(m)}
-              className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-                mode === m ? 'text-white bg-brand-primary/30 border-b-2 border-brand-primary' : 'text-purple-400 hover:text-white'
+              className={`flex-1 py-2.5 rounded-xl font-display font-extrabold text-sm border-[3px] border-arcade-ink transition-all ${
+                mode === m
+                  ? 'bg-arcade-coral text-arcade-ink shadow-hard-sm'
+                  : 'bg-transparent text-arcade-ink/55 hover:text-arcade-ink'
               }`}
             >
-              {m === 'login' ? 'Giriş Yap' : 'Kayıt Ol'}
+              {m === 'login' ? 'Giriş yap' : 'Kayıt ol'}
             </button>
           ))}
         </div>
@@ -117,19 +118,19 @@ export function AuthModal({ onClose, onSuccess }: { onClose: () => void; onSucce
           )}
 
           {error && (
-            <div className="px-3 py-2 rounded-lg bg-red-900/40 border border-red-500 text-red-300 text-xs">
+            <div className="px-3 py-2 rounded-xl bg-arcade-coral/25 border-[3px] border-arcade-ink text-arcade-ink text-xs font-semibold">
               {error}
             </div>
           )}
 
-          <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
-            {loading ? 'Lütfen bekle...' : mode === 'login' ? 'Giriş Yap' : 'Hesap Oluştur'}
+          <button type="submit" disabled={loading} className="btn-arcade w-full py-3">
+            {loading ? 'Lütfen bekle…' : mode === 'login' ? 'Giriş yap' : 'Hesap oluştur'}
           </button>
 
           <button
             type="button"
             onClick={() => { playClick(); onClose(); }}
-            className="w-full text-purple-400 hover:text-white text-sm py-1 transition-colors"
+            className="block mx-auto text-sm font-semibold underline decoration-2 underline-offset-2 opacity-70 hover:opacity-100 transition-opacity"
           >
             Misafir olarak devam et
           </button>

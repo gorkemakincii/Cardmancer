@@ -1,27 +1,21 @@
-import { motion } from 'framer-motion';
 import type { Card } from '../types';
 
 // ── Card metadata ─────────────────────────────────────────────────────────────
+// NOTE: Card artwork is intentionally a placeholder for now — real art + animations
+// will be dropped in later. Only the value/name are used to render cards today.
 
-interface CardConfig {
-  emoji: string;
-  gradient: string;
-  border: string;
-  glow: string;
-}
-
-export const CARD_CONFIG: Record<number, CardConfig & { name: string }> = {
-  0:  { emoji: '🤖', name: 'Royal Robovac',   gradient: 'from-slate-400 via-slate-500 to-gray-700',       border: 'border-slate-300', glow: 'shadow-slate-400/50'  },
-  1:  { emoji: '🔮', name: 'Crystal Bowl',    gradient: 'from-sky-300 via-sky-500 to-blue-700',           border: 'border-sky-300',   glow: 'shadow-sky-400/50'    },
-  2:  { emoji: '🪤', name: 'Mouse Trapper',   gradient: 'from-zinc-500 via-zinc-600 to-zinc-800',         border: 'border-zinc-400',  glow: 'shadow-zinc-500/40'   },
-  3:  { emoji: '🐰', name: 'Battle Bunny',    gradient: 'from-yellow-400 via-yellow-500 to-amber-700',    border: 'border-yellow-300',glow: 'shadow-yellow-400/50' },
-  4:  { emoji: '🛡️', name: 'Shell Shield',    gradient: 'from-blue-400 via-blue-600 to-indigo-800',       border: 'border-blue-300',  glow: 'shadow-blue-400/50'   },
-  5:  { emoji: '🐍', name: 'Snake Sorcerer',  gradient: 'from-green-500 via-green-700 to-emerald-900',    border: 'border-green-400', glow: 'shadow-green-500/50'  },
-  6:  { emoji: '🦴', name: 'Grave Digger',    gradient: 'from-amber-600 via-amber-800 to-stone-900',      border: 'border-amber-500', glow: 'shadow-amber-500/50'  },
-  7:  { emoji: '🤹', name: 'Jittery Juggler', gradient: 'from-pink-400 via-pink-600 to-fuchsia-800',      border: 'border-pink-400',  glow: 'shadow-pink-400/50'   },
-  8:  { emoji: '🔄', name: 'Hermit Swap',     gradient: 'from-orange-400 via-orange-600 to-amber-900',    border: 'border-orange-300',glow: 'shadow-orange-400/50' },
-  9:  { emoji: '🚫', name: 'Not A Pet!',      gradient: 'from-purple-500 via-violet-700 to-purple-950',   border: 'border-purple-400',glow: 'shadow-purple-400/50' },
-  10: { emoji: '👑', name: 'King Cat',        gradient: 'from-red-500 via-red-700 to-rose-950',           border: 'border-red-400',   glow: 'shadow-red-400/50'    },
+export const CARD_CONFIG: Record<number, { name: string }> = {
+  0:  { name: 'Royal Robovac' },
+  1:  { name: 'Crystal Bowl' },
+  2:  { name: 'Mouse Trapper' },
+  3:  { name: 'Battle Bunny' },
+  4:  { name: 'Shell Shield' },
+  5:  { name: 'Snake Sorcerer' },
+  6:  { name: 'Grave Digger' },
+  7:  { name: 'Jittery Juggler' },
+  8:  { name: 'Hermit Swap' },
+  9:  { name: 'Not A Pet!' },
+  10: { name: 'King Cat' },
 };
 
 export const CARD_NAMES: Record<number, string> = Object.fromEntries(
@@ -42,85 +36,51 @@ export const CARD_DESC: Record<number, string> = {
   10: '⚠️ Oynayan elenir!',
 };
 
-// ── Face-down card ────────────────────────────────────────────────────────────
+// ── Face-down card (placeholder back) ──────────────────────────────────────────
 
 export function FaceDownCard({ size = 'sm' }: { size?: 'sm' | 'md' }) {
-  const dim = size === 'sm' ? 'w-10 h-14' : 'w-20 h-28';
+  const dim = size === 'sm' ? 'w-10 h-14 rounded-lg border-2' : 'w-20 h-28 rounded-xl border-[3px]';
   return (
-    <div className={`${dim} rounded-xl border-2 border-purple-700 bg-gradient-to-b from-purple-900 via-brand-dark to-indigo-950 shadow-lg flex items-center justify-center relative overflow-hidden flex-shrink-0`}>
-      <div className="absolute inset-1 rounded-lg border border-purple-800/40" />
-      <span className="text-purple-500 text-xl relative z-10">🐾</span>
+    <div className={`${dim} border-arcade-ink bg-arcade-ink relative overflow-hidden flex items-center justify-center shrink-0 select-none`}>
+      <div className="absolute inset-1 rounded-md border border-arcade-cream/15" />
+      <span className={`font-display font-extrabold text-arcade-cream/30 ${size === 'sm' ? 'text-base' : 'text-2xl'}`}>?</span>
     </div>
   );
 }
 
-// ── Playing card ──────────────────────────────────────────────────────────────
+// ── Playing card (placeholder face) ─────────────────────────────────────────────
 
 interface PlayingCardProps {
   card: Card;
   size?: 'sm' | 'md';
-  selected?: boolean;
-  selectable?: boolean;
-  onClick?: () => void;
 }
 
-export function PlayingCard({ card, size = 'md', selected = false, selectable = false, onClick }: PlayingCardProps) {
-  const cfg = CARD_CONFIG[card.value] ?? CARD_CONFIG[0];
+export function PlayingCard({ card, size = 'md' }: PlayingCardProps) {
+  const name = CARD_CONFIG[card.value]?.name ?? '';
 
   if (size === 'sm') {
     return (
-      <div className={`
-        w-10 h-14 rounded-xl border-2 ${cfg.border} bg-gradient-to-b ${cfg.gradient}
-        shadow-lg relative overflow-hidden flex-shrink-0 select-none
-      `}>
-        <div className="absolute inset-1 rounded-lg border border-white/10" />
-        <div className="absolute top-0.5 left-1 text-white font-black text-xs leading-none">{card.value}</div>
-        <div className="absolute inset-0 flex items-center justify-center text-xl">{cfg.emoji}</div>
-        <div className="absolute bottom-0.5 right-1 text-white font-black text-xs leading-none rotate-180">{card.value}</div>
+      <div className="w-10 h-14 rounded-lg border-2 border-arcade-ink bg-arcade-cream text-arcade-ink relative overflow-hidden shrink-0 select-none flex items-center justify-center">
+        <span className="absolute top-0.5 left-1 font-display font-extrabold text-[10px] leading-none">{card.value}</span>
+        <span className="font-display font-extrabold text-xl leading-none">{card.value}</span>
       </div>
     );
   }
 
-  // md — full playing card with corner pips
+  // md — placeholder face: big value, name strip, art slot to be filled in later
   return (
-    <motion.button
-      onClick={onClick}
-      disabled={!selectable}
-      animate={selected ? { y: -14, scale: 1.09 } : { y: 0, scale: 1 }}
-      whileHover={selectable && !selected ? { y: -5, scale: 1.03 } : {}}
-      whileTap={selectable ? { scale: 0.95 } : {}}
-      transition={{ type: 'spring', stiffness: 420, damping: 28 }}
-      className={`
-        w-20 h-28 rounded-xl border-2 ${cfg.border} bg-gradient-to-b ${cfg.gradient}
-        shadow-xl ${cfg.glow} relative overflow-hidden select-none
-        ${selectable ? 'cursor-pointer' : 'cursor-default'}
-        ${selected ? 'ring-4 ring-white/80 ring-offset-2 ring-offset-brand-dark' : ''}
-      `}
-    >
-      {/* Inner border for depth */}
-      <div className="absolute inset-[3px] rounded-lg border border-white/10 pointer-events-none" />
+    <div className="w-20 h-28 rounded-xl border-[3px] border-arcade-ink bg-arcade-cream text-arcade-ink shadow-hard-sm relative overflow-hidden select-none">
+      <span className="absolute top-1.5 left-2 font-display font-extrabold text-sm leading-none">{card.value}</span>
+      <span className="absolute bottom-1.5 right-2 font-display font-extrabold text-sm leading-none rotate-180">{card.value}</span>
 
-      {/* Top-left pip */}
-      <div className="absolute top-1.5 left-2 flex flex-col items-start z-10 leading-none">
-        <span className="text-white font-black text-base drop-shadow">{card.value}</span>
-        <span className="text-sm leading-none">{cfg.emoji}</span>
+      {/* Placeholder art slot (real artwork goes here later) */}
+      <div className="absolute inset-x-2 top-5 bottom-6 rounded-md border-2 border-dashed border-arcade-ink/20 bg-arcade-ink/[0.06] flex items-center justify-center">
+        <span className="font-display font-extrabold text-3xl opacity-70">{card.value}</span>
       </div>
 
-      {/* Center */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <span className="text-[32px] drop-shadow-lg">{cfg.emoji}</span>
-      </div>
-
-      {/* Card name */}
-      <div className="absolute bottom-5 inset-x-0 flex justify-center pointer-events-none">
-        <span className="text-[7px] text-white/55 font-medium text-center px-1 leading-tight">{cfg.name}</span>
-      </div>
-
-      {/* Bottom-right pip (180°) */}
-      <div className="absolute bottom-1.5 right-2 flex flex-col items-end z-10 leading-none rotate-180">
-        <span className="text-white font-black text-base drop-shadow">{card.value}</span>
-        <span className="text-sm leading-none">{cfg.emoji}</span>
-      </div>
-    </motion.button>
+      <span className="absolute bottom-1 inset-x-0 text-center text-[7px] font-bold uppercase tracking-wide opacity-55 px-1 leading-tight">
+        {name}
+      </span>
+    </div>
   );
 }

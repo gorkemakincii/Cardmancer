@@ -5,11 +5,9 @@
 @layer base {
   body {
     @apply text-white min-h-screen;
-    /* Vignette: subtly brighter at the center, darkening toward the corners */
-    background-color: #1e1b4b;
-    background-image: radial-gradient(ellipse at center, #2a2660 0%, #1e1b4b 52%, #13102e 100%);
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+    /* Neo-arcade base: every page paints its own .arcade-stage on top, this just
+       prevents an indigo flash on load / on any uncovered area. */
+    background-color: #1B1525;
   }
 }
 
@@ -35,4 +33,114 @@
 
 .animate-breathe {
   animation: breathe 2.2s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Neo-arcade pop redesign — scoped utilities (HomePage proof).
+   Global <body> is left untouched so the not-yet-redesigned pages keep their look.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Full-bleed arcade table: aubergine field + faint halftone dots + warm top glow */
+.arcade-stage {
+  background-color: #1B1525;
+  background-image:
+    radial-gradient(ellipse 90% 60% at 50% -8%, rgba(255, 92, 56, 0.20), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 108%, rgba(46, 196, 182, 0.12), transparent 60%),
+    radial-gradient(circle, rgba(255, 244, 224, 0.05) 1px, transparent 1.5px);
+  background-size: 100% 100%, 100% 100%, 22px 22px;
+  background-position: 0 0, 0 0, 0 0;
+}
+
+/* Chunky "sticker" tactile button — presses physically into its hard shadow */
+.btn-arcade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: #14110F;
+  background: #FF5C38;
+  border: 3px solid #14110F;
+  border-radius: 16px;
+  box-shadow: 6px 6px 0 0 #14110F;
+  transition: transform 90ms ease, box-shadow 90ms ease, background-color 120ms ease;
+}
+.btn-arcade:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 7px 7px 0 0 #14110F;
+}
+.btn-arcade:active:not(:disabled) {
+  transform: translate(6px, 6px);
+  box-shadow: 0 0 0 0 #14110F;
+}
+.btn-arcade:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: 4px 4px 0 0 #14110F;
+}
+.btn-arcade:focus-visible {
+  outline: 3px solid #FFC94D;
+  outline-offset: 3px;
+}
+
+/* Cream/teal variants of the same tactile button */
+.btn-arcade--cream { background: #FFF4E0; }
+.btn-arcade--teal  { background: #2EC4B6; }
+
+/* Quiet ghost link-button (e.g. "Nasıl oynanır?") */
+.btn-ghost-arcade {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 600;
+  color: #FFF4E0;
+  border: 2px solid rgba(255, 244, 224, 0.22);
+  border-radius: 999px;
+  transition: border-color 120ms ease, color 120ms ease, background-color 120ms ease;
+}
+.btn-ghost-arcade:hover {
+  color: #14110F;
+  background: #FFC94D;
+  border-color: #FFC94D;
+}
+.btn-ghost-arcade:focus-visible {
+  outline: 3px solid #FFC94D;
+  outline-offset: 2px;
+}
+
+/* Stacked "sticker" title — the signature pop treatment */
+.title-arcade {
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  font-weight: 800;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  text-shadow: 4px 4px 0 #14110F;
+}
+
+/* Chunky outlined input field */
+.input-arcade {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  color: #14110F;
+  background: #FFF4E0;
+  border: 3px solid #14110F;
+  border-radius: 14px;
+  box-shadow: 4px 4px 0 0 #14110F;
+  transition: box-shadow 90ms ease, transform 90ms ease;
+}
+.input-arcade::placeholder { color: #14110F; opacity: 0.4; }
+.input-arcade:focus {
+  outline: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 0 #FF5C38;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-arcade,
+  .btn-arcade:hover:not(:disabled),
+  .btn-arcade:active:not(:disabled),
+  .input-arcade,
+  .input-arcade:focus {
+    transition: none;
+    transform: none;
+  }
 }

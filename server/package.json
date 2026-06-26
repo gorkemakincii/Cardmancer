@@ -1,7 +1,7 @@
 {
-  "name": "power-hungry-pets-server",
+  "name": "cardmancer-server",
   "version": "1.0.0",
-  "description": "Power Hungry Pets - Game Server",
+  "description": "Cardmancer - Game Server",
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
