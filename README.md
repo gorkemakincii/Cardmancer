@@ -64,21 +64,21 @@ WebSockets. Play instantly as a guest, or create an account to track your stats.
 
 ## 🃏 The Cards
 
-The 24-card deck is built from 11 distinct pets. Lower numbers are common and weak; higher numbers are rare and powerful.
+The deck is built from 11 distinct yokai. Lower numbers are common and weak; higher numbers are rare and powerful.
 
 | #  | Card | Count | Effect |
 |:--:|------|:-----:|--------|
-| 0  | 🤖 Royal Robovac    | ×3 | If you're the **only** player who discarded a 0, you win the round |
-| 1  | 🔮 Crystal Bowl     | ×5 | Guess a player's hand card — if correct, they're eliminated (can't guess 1) |
-| 2  | 🪤 Mouse Trapper    | ×3 | Secretly **peek** at another player's hand |
-| 3  | 🐰 Battle Bunny     | ×3 | **Compare** hands with a player — the lower card is eliminated |
-| 4  | 🛡️ Shell Shield     | ×2 | You **can't be targeted** until your next turn |
-| 5  | 🐍 Snake Sorcerer   | ×2 | Force a player to **discard** their hand and draw a new card |
-| 6  | 🦴 Doggy Grave Digger | ×1 | Peek at the set-aside card and **optionally swap** it into your hand |
-| 7  | 🤹 Jittery Juggler  | ×1 | Every unprotected player returns their card and **draws a new one** |
-| 8  | 🔄 Hermit Home Swap | ×1 | **Swap hands** with another player |
-| 9  | 🚫 Not A Pet!       | ×1 | Swap hands **only if** your target is holding the King Cat (10) |
-| 10 | 👑 King Cat         | ×1 | If you ever **play** this card, you're eliminated |
+| 0  | 🌑 Kage Kit          | ×3 | If you're the **only** player who discarded a 0, you win the round |
+| 1  | 🔮 Mystic Neko       | ×5 | Guess a player's hand card — if correct, they're eliminated (can't guess 1) |
+| 2  | 🦉 Fukurou Seer      | ×3 | Secretly **peek** at another player's hand |
+| 3  | 🐰 Samurai Usagi     | ×3 | **Compare** hands with a player — the lower card is eliminated |
+| 4  | 🐢 Zen Kappa         | ×2 | You **can't be targeted** until your next turn |
+| 5  | 🌪️ Kamaitachi        | ×2 | Force a player to **discard** their hand and draw a new card |
+| 6  | ⛏️ Mogura            | ×1 | Peek at the set-aside card and **optionally swap** it into your hand |
+| 7  | 💣 Kemuri Neko       | ×1 | Every unprotected player returns their card and **draws a new one** |
+| 8  | ⚡ Raijin Scroll      | ×1 | **Swap hands** with another player |
+| 9  | 🦝 Bakedanuki Bandit | ×1 | Swap hands **only if** your target is holding the Nekomata Emperor (10) |
+| 10 | 👑 Nekomata Emperor  | ×1 | If you ever **play** this card, you're eliminated |
 
 ---
 
