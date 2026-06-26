@@ -14,7 +14,7 @@ const RULES: string[] = [
   'Oynanan kartlar önünde açık kalır — herkes ne oynadığını görebilir.',
   'Bir kartın etkisiyle elenirsen o tur boyunca oyun dışı kalırsın.',
   'Deste tükenirse ya da tek oyuncu kalırsa tur biter ve kazanan belli olur.',
-  'Yüksek kart güçlüdür ama tehlikelidir: King Cat (10) elinde kalırsa avantajlısın, ama oynamak zorunda kalırsan elenirsin!',
+  'Yüksek kart güçlüdür ama tehlikelidir: Nekomata Emperor (10) elinde kalırsa avantajlısın, ama oynamak zorunda kalırsan elenirsin!',
 ];
 
 function SectionLabel({ children }: { children: React.ReactNode }) {

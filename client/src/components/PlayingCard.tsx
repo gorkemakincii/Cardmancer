@@ -1,25 +1,40 @@
 import type { Card } from '../types';
 
 // ── Card metadata ─────────────────────────────────────────────────────────────
-// NOTE: Card artwork is intentionally a placeholder for now — real art + animations
-// will be dropped in later. Only the value/name are used to render cards today.
+// Card artwork lives in ../assets/cards/{value}.png (cute enamel-pin yokai/ninja
+// theme). The art is collected at build time via Vite's import.meta.glob; cards
+// without a matching image gracefully fall back to a value placeholder.
 
 export const CARD_CONFIG: Record<number, { name: string }> = {
-  0:  { name: 'Royal Robovac' },
-  1:  { name: 'Crystal Bowl' },
-  2:  { name: 'Mouse Trapper' },
-  3:  { name: 'Battle Bunny' },
-  4:  { name: 'Shell Shield' },
-  5:  { name: 'Snake Sorcerer' },
-  6:  { name: 'Grave Digger' },
-  7:  { name: 'Jittery Juggler' },
-  8:  { name: 'Hermit Swap' },
-  9:  { name: 'Not A Pet!' },
-  10: { name: 'King Cat' },
+  0:  { name: 'Kage Kit' },
+  1:  { name: 'Mystic Neko' },
+  2:  { name: 'Fukurou Seer' },
+  3:  { name: 'Samurai Usagi' },
+  4:  { name: 'Zen Kappa' },
+  5:  { name: 'Kamaitachi' },
+  6:  { name: 'Mogura' },
+  7:  { name: 'Kemuri Neko' },
+  8:  { name: 'Raijin Scroll' },
+  9:  { name: 'Bakedanuki Bandit' },
+  10: { name: 'Nekomata Emperor' },
 };
 
 export const CARD_NAMES: Record<number, string> = Object.fromEntries(
   Object.entries(CARD_CONFIG).map(([v, c]) => [Number(v), c.name]),
+);
+
+// Build-time map of card value → artwork URL. Missing values simply stay undefined.
+const CARD_ART_MODULES = import.meta.glob('../assets/cards/*.{png,jpg,jpeg,webp}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>;
+
+export const CARD_ART: Record<number, string> = Object.fromEntries(
+  Object.entries(CARD_ART_MODULES).map(([path, url]) => {
+    const value = Number(path.match(/(\d+)\.\w+$/)?.[1]);
+    return [value, url];
+  }),
 );
 
 export const CARD_DESC: Record<number, string> = {
@@ -32,7 +47,7 @@ export const CARD_DESC: Record<number, string> = {
   6:  'Gizli kartı gör — elindekiyle takas (isteğe bağlı)',
   7:  'Herkes (korunanlar hariç) yeni kart çeker',
   8:  'Hedef ile elleri takas et',
-  9:  'Hedef King Cat (10) tutuyorsa takas et',
+  9:  'Hedef Nekomata Emperor (10) tutuyorsa takas et',
   10: '⚠️ Oynayan elenir!',
 };
 
@@ -57,6 +72,7 @@ interface PlayingCardProps {
 
 export function PlayingCard({ card, size = 'md' }: PlayingCardProps) {
   const name = CARD_CONFIG[card.value]?.name ?? '';
+  const art = CARD_ART[card.value];
 
   if (size === 'sm') {
     return (
@@ -73,9 +89,13 @@ export function PlayingCard({ card, size = 'md' }: PlayingCardProps) {
       <span className="absolute top-1.5 left-2 font-display font-extrabold text-sm leading-none">{card.value}</span>
       <span className="absolute bottom-1.5 right-2 font-display font-extrabold text-sm leading-none rotate-180">{card.value}</span>
 
-      {/* Placeholder art slot (real artwork goes here later) */}
-      <div className="absolute inset-x-2 top-5 bottom-6 rounded-md border-2 border-dashed border-arcade-ink/20 bg-arcade-ink/[0.06] flex items-center justify-center">
-        <span className="font-display font-extrabold text-3xl opacity-70">{card.value}</span>
+      {/* Art window — illustrated card art, or a value placeholder when missing */}
+      <div className="absolute inset-x-2 top-5 bottom-6 rounded-md overflow-hidden border-2 border-arcade-ink/70 bg-arcade-bg flex items-center justify-center">
+        {art ? (
+          <img src={art} alt={name} draggable={false} className="w-full h-full object-cover select-none" />
+        ) : (
+          <span className="font-display font-extrabold text-3xl text-arcade-cream/80">{card.value}</span>
+        )}
       </div>
 
       <span className="absolute bottom-1 inset-x-0 text-center text-[7px] font-bold uppercase tracking-wide opacity-55 px-1 leading-tight">
