@@ -478,9 +478,20 @@ io.on('connection', (socket) => {
     if (room.status !== 'PLAYING') { socket.emit('rejoin_failed', { reason: 'not_playing' }); return; }
 
     const key = reconnectKeyOf(socket);
-    const player = room.players.find(p => p.reconnectKey === key);
-    if (!player) { socket.emit('rejoin_failed', { reason: 'no_seat' }); return; }
-    if (player.isEliminated) { socket.emit('rejoin_failed', { reason: 'eliminated' }); return; }
+    // A reconnect should reclaim a seat that genuinely dropped — never hijack a
+    // seat that is still live. If several seats share a reconnectKey (e.g. two
+    // same-browser tabs that ended up with the same clientId), prefer the one
+    // that is actually disconnected; only fall back to a live seat when this is
+    // the same socket re-announcing itself.
+    const candidates = room.players.filter(p => p.reconnectKey === key && !p.isEliminated);
+    const player = candidates.find(p => !p.connected)
+      ?? candidates.find(p => p.socketId === socket.id)
+      ?? null;
+    if (!player) {
+      const onlyEliminated = room.players.some(p => p.reconnectKey === key && p.isEliminated);
+      socket.emit('rejoin_failed', { reason: onlyEliminated ? 'eliminated' : 'no_seat' });
+      return;
+    }
 
     const oldSocketId = player.socketId;
     const newSocketId = socket.id;
