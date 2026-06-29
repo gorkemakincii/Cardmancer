@@ -134,6 +134,29 @@
   box-shadow: 5px 5px 0 0 #FF5C38;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   Hearthstone-style card surfaces (gold/baroque). Sub-element sizing uses cqw
+   units so one design scales across sm/md/lg by only changing the card width.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Layered gold frame */
+.cm-gold {
+  background:
+    linear-gradient(150deg, #FDE89A 0%, #E9B83E 20%, #B5821B 50%, #8A6314 74%, #E3B23C 100%);
+}
+/* Parchment card paper */
+.cm-parchment {
+  background: radial-gradient(130% 90% at 50% 0%, #FCF3DA 0%, #EBD6A4 68%, #E0C68C 100%);
+}
+/* Name banner ribbon */
+.cm-ribbon {
+  background: linear-gradient(180deg, #F7D885 0%, #D9A52E 55%, #B5821B 100%);
+}
+/* Value cost gem */
+.cm-gem {
+  background: radial-gradient(circle at 35% 28%, #6FB6F2 0%, #2E6FC4 45%, #15396F 100%);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .btn-arcade,
   .btn-arcade:hover:not(:disabled),

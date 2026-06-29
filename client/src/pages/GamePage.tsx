@@ -93,16 +93,16 @@ function DeckPile({ count, canDraw, onDraw }: { count: number; canDraw?: boolean
           disabled={!canDraw}
           animate={canDraw ? { y: [0, -4, 0] } : { y: 0 }}
           transition={canDraw ? { repeat: Infinity, duration: 1.4 } : {}}
-          className={`relative w-20 h-28 ${canDraw ? 'cursor-pointer' : 'cursor-default'}`}
+          className={`relative w-28 aspect-[5/7] ${canDraw ? 'cursor-pointer' : 'cursor-default'}`}
         >
-          <div className="absolute top-2 left-2 w-20 h-28 rounded-xl border-[3px] border-arcade-ink bg-arcade-ink/70" />
-          <div className="absolute top-1 left-1 w-20 h-28 rounded-xl border-[3px] border-arcade-ink bg-arcade-ink/85" />
-          <div className={`absolute inset-0 rounded-xl ${canDraw ? 'ring-4 ring-arcade-sun ring-offset-2 ring-offset-arcade-bg' : ''}`}>
+          <div className="absolute top-2 left-2 w-full h-full rounded-[10%] bg-arcade-ink/60" />
+          <div className="absolute top-1 left-1 w-full h-full rounded-[10%] bg-arcade-ink/80" />
+          <div className={`absolute inset-0 rounded-[10%] ${canDraw ? 'ring-4 ring-arcade-sun ring-offset-2 ring-offset-arcade-bg' : ''}`}>
             <FaceDownCard size="md" />
           </div>
         </motion.button>
       ) : (
-        <div className="w-20 h-28 rounded-xl border-[3px] border-dashed border-arcade-cream/25 flex items-center justify-center text-arcade-cream/40 text-xs font-bold">
+        <div className="w-28 aspect-[5/7] rounded-[10%] border-[3px] border-dashed border-arcade-cream/25 flex items-center justify-center text-arcade-cream/40 text-xs font-bold">
           boş
         </div>
       )}
@@ -119,54 +119,48 @@ function OtherPlayerPanel({ player, isActive, index }: { player: PlayerPublicVie
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className={`
-        rounded-2xl p-3 relative overflow-hidden border-[3px]
-        ${isActive ? 'bg-arcade-sun/20 border-arcade-sun' : 'bg-arcade-cream/[0.06] border-arcade-cream/15'}
-        ${player.isEliminated ? 'opacity-45' : ''}
-        ${!player.connected && !player.isEliminated ? 'opacity-70 grayscale' : ''}
-      `}
+      className={`flex flex-col items-center gap-2 ${player.isEliminated ? 'opacity-50' : !player.connected ? 'opacity-70 grayscale' : ''}`}
     >
-      <AnimatePresence>
-        {player.isEliminated && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="absolute inset-0 bg-arcade-ink/55 flex items-center justify-center z-10 rounded-2xl"
-          >
-            <span className="text-arcade-coral font-display font-extrabold text-xs tracking-widest rotate-[-8deg] border-2 border-arcade-coral px-2 py-0.5 rounded">ELENDİ</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="flex items-center gap-2 mb-2 min-w-0">
-        <div className="w-6 h-6 rounded-md bg-arcade-ink text-arcade-cream flex items-center justify-center text-xs font-display font-bold shrink-0">
+      {/* Name + status pill */}
+      <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border-2 min-w-0 ${
+        isActive && !player.isEliminated ? 'bg-arcade-sun/25 border-arcade-sun' : 'bg-arcade-ink/40 border-arcade-cream/15'
+      }`}>
+        <div className="w-5 h-5 rounded-md bg-arcade-ink text-arcade-cream flex items-center justify-center text-[10px] font-display font-bold shrink-0">
           {player.username[0].toUpperCase()}
         </div>
-        <span className="text-arcade-cream text-sm font-semibold truncate">{player.username}</span>
+        <span className="text-arcade-cream text-sm font-semibold truncate max-w-[7rem]">{player.username}</span>
         {!player.connected && !player.isEliminated && (
-          <span title="Bağlantısı koptu — geri dönmesi bekleniyor" className="text-arcade-sun text-[10px] font-bold shrink-0 border-2 border-arcade-sun/50 rounded px-1 py-0.5 leading-none">
-            kopuk
-          </span>
+          <span title="Bağlantısı koptu — geri dönmesi bekleniyor" className="text-arcade-sun text-[9px] font-bold shrink-0 border border-arcade-sun/50 rounded px-1 leading-tight">kopuk</span>
         )}
         {player.isProtected && (
           <motion.span
             animate={{ scale: [1, 1.15, 1] }} transition={{ repeat: Infinity, duration: 2 }}
-            title="Korunuyor" className="text-arcade-teal text-[10px] font-bold shrink-0 border-2 border-arcade-teal/50 rounded px-1 py-0.5 leading-none"
+            title="Korunuyor" className="text-arcade-teal text-[9px] font-bold shrink-0 border border-arcade-teal/50 rounded px-1 leading-tight"
           >KALKAN</motion.span>
-        )}
-        {isActive && !player.isEliminated && (
-          <motion.span
-            animate={{ x: [0, 3, 0] }} transition={{ repeat: Infinity, duration: 0.8 }}
-            className="ml-auto text-arcade-sun text-xs font-bold shrink-0"
-          >◀ sıra</motion.span>
         )}
       </div>
 
-      <div className="flex items-end gap-1.5 flex-wrap">
-        {Array.from({ length: player.handSize }).map((_, i) => (
-          <FaceDownCard key={`h${i}`} size="sm" />
-        ))}
-        <CardCascade cards={player.faceUpCards} />
+      {/* Face-down hand + played (face-up) cards */}
+      <div className="relative flex items-end gap-2">
+        <AnimatePresence>
+          {player.isEliminated && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              className="absolute inset-0 flex items-center justify-center z-10"
+            >
+              <span className="text-arcade-coral font-display font-extrabold text-xs tracking-widest rotate-[-8deg] border-2 border-arcade-coral bg-arcade-ink/70 px-2 py-0.5 rounded">ELENDİ</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className={`flex items-end rounded-xl ${isActive && !player.isEliminated ? 'drop-shadow-[0_0_10px_rgba(255,201,77,0.55)]' : ''}`}>
+          {Array.from({ length: player.handSize }).map((_, i) => (
+            <div key={`h${i}`} style={{ marginLeft: i > 0 ? -22 : 0, zIndex: i }} className="relative">
+              <FaceDownCard size="sm" />
+            </div>
+          ))}
+        </div>
+        {player.faceUpCards.length > 0 && <CardCascade cards={player.faceUpCards} />}
       </div>
     </motion.div>
   );
@@ -400,6 +394,7 @@ export default function GamePage() {
   const [modal, setModal] = useState<ModalState | null>(null);
   const [error, setError] = useState('');
   const [gameOver, setGameOver] = useState<GameOverData | null>(null);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   // Drag-to-play state
   const dropRef = useRef<HTMLDivElement>(null);
@@ -659,7 +654,7 @@ export default function GamePage() {
 
   return (
     <div className="arcade-stage min-h-screen flex flex-col px-4 py-4 font-ui text-arcade-cream">
-      <div className="w-full max-w-2xl mx-auto flex flex-col flex-1">
+      <div className="w-full max-w-4xl mx-auto flex flex-col flex-1">
 
         {/* Compact info widget — fixed top-left */}
         <motion.div
@@ -677,6 +672,16 @@ export default function GamePage() {
             </div>
           ))}
         </motion.div>
+
+        {/* Leave game — fixed top-right */}
+        <motion.button
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          onClick={() => { playClick(); setShowLeaveConfirm(true); }}
+          className="fixed top-3 right-3 z-40 flex items-center gap-1.5 rounded-xl bg-arcade-cream text-arcade-ink border-[3px] border-arcade-ink shadow-hard-sm px-3 py-2 text-sm font-display font-extrabold hover:bg-arcade-coral hover:text-arcade-ink transition-colors"
+        >
+          🚪 Oyundan Ayrıl
+        </motion.button>
 
         {/* Turn status */}
         <motion.div
@@ -696,9 +701,9 @@ export default function GamePage() {
               : `${activePlayer?.username ?? '?'} oynuyor…`}
         </motion.div>
 
-        {/* Other players */}
+        {/* Other players — face-down hands across the top of the board */}
         {otherPlayers.length > 0 && (
-          <div className={`grid gap-3 ${otherPlayers.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+          <div className="flex flex-wrap justify-center items-start gap-x-8 gap-y-4 pt-1">
             {otherPlayers.map((p, i) => (
               <OtherPlayerPanel key={p.socketId} player={p} isActive={p.socketId === gameView.activePlayerId} index={i} />
             ))}
@@ -724,92 +729,91 @@ export default function GamePage() {
 
           <motion.div
             ref={dropRef}
-            animate={isDragging ? { scale: 1.03 } : { scale: 1 }}
-            className={`relative w-full max-w-sm rounded-[24px] border-[3px] border-dashed flex items-center justify-center text-center px-6 py-12 transition-colors ${
+            animate={isDragging ? { scale: 1.04 } : { scale: 1 }}
+            className={`relative w-full max-w-md h-44 rounded-[28px] flex items-center justify-center text-center transition-colors border-[3px] ${
               isDragging
-                ? 'border-arcade-coral bg-arcade-coral/15'
+                ? 'border-dashed border-arcade-coral bg-arcade-coral/15'
                 : canPlay
-                  ? 'border-arcade-cream/35 bg-arcade-cream/[0.04]'
-                  : 'border-arcade-cream/15'
+                  ? 'border-dashed border-arcade-cream/20'
+                  : 'border-transparent'
             }`}
           >
-            <div>
-              <p className="font-display font-extrabold text-lg text-arcade-cream/80">
-                {isDragging ? 'Bırak ve oyna!' : canPlay ? 'Kartı buraya sürükle' : 'Masa'}
-              </p>
-              {canPlay && !isDragging && (
-                <p className="text-xs font-medium text-arcade-cream/45 mt-1">Oynamak için elindeki kartı buraya bırak</p>
-              )}
-            </div>
+            {isDragging ? (
+              <p className="font-display font-extrabold text-xl text-arcade-coral">Bırak ve oyna!</p>
+            ) : canPlay ? (
+              <p className="text-sm font-medium text-arcade-cream/35">Kartı buraya sürükle</p>
+            ) : null}
           </motion.div>
         </div>
 
-        {/* My hand */}
-        <div className="bg-arcade-cream text-arcade-ink border-[3px] border-arcade-ink rounded-[22px] p-5 shadow-hard">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-display font-extrabold text-lg">Elin</h3>
-            <span className="text-sm font-bold opacity-60">{gameView.myHand.length} kart</span>
-          </div>
-
-          {/* Hover/drag hint description */}
-          <div className="min-h-[1.25rem] mb-2 text-center">
+        {/* My hand — fanned cards in front, like Hearthstone */}
+        <div className="relative flex flex-col items-center pb-1">
+          {/* Hovered card name + description tooltip */}
+          <div className="h-12 mb-1 flex items-end justify-center px-4">
             <AnimatePresence mode="wait">
               {hoveredCard && (
-                <motion.p
+                <motion.div
                   key={hoveredCard.id}
-                  initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                  className="text-xs font-medium opacity-75"
+                  initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }}
+                  className="bg-arcade-cream text-arcade-ink border-[3px] border-arcade-ink rounded-xl px-3.5 py-1.5 shadow-hard-sm max-w-lg text-center"
                 >
-                  <span className="font-display font-bold">{CARD_NAMES[hoveredCard.value]}</span> — {CARD_DESC[hoveredCard.value]}
-                </motion.p>
+                  <span className="font-display font-extrabold text-sm">{CARD_NAMES[hoveredCard.value]}</span>
+                  <span className="text-xs font-medium opacity-75"> — {CARD_DESC[hoveredCard.value]}</span>
+                </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Hand cards — draggable when it's your play phase */}
-          <div className="flex gap-5 justify-center mb-4 min-h-[7.5rem] items-end">
+          {/* Fan */}
+          <div className="flex justify-center items-end min-h-[14rem]">
             <AnimatePresence mode="popLayout">
-              {gameView.myHand.map(card => (
-                <motion.div
-                  key={card.id}
-                  initial={{ opacity: 0, y: 30, scale: 0.8 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -24, scale: 0.85 }}
-                  transition={{ type: 'spring', stiffness: 380, damping: 26 }}
-                  drag={canPlay}
-                  dragSnapToOrigin
-                  dragElastic={0.18}
-                  onDragStart={() => { setIsDragging(true); setHoveredCardId(card.id); }}
-                  onDragEnd={(e, info) => handleDragEnd(e, info, card)}
-                  whileDrag={{ scale: 1.12, zIndex: 60, cursor: 'grabbing' }}
-                  whileHover={canPlay ? { y: -20, scale: 1.06 } : {}}
-                  onHoverStart={() => setHoveredCardId(card.id)}
-                  onHoverEnd={() => { if (!isDragging) setHoveredCardId(null); }}
-                  className={canPlay ? 'cursor-grab' : ''}
-                  style={{ touchAction: 'none' }}
-                >
-                  <PlayingCard card={card} />
-                </motion.div>
-              ))}
+              {gameView.myHand.map((card, i, arr) => {
+                const n = arr.length;
+                const offset = i - (n - 1) / 2;
+                const rot = offset * 6;
+                const lift = Math.abs(offset) * 12;
+                return (
+                  <motion.div
+                    key={card.id}
+                    initial={{ opacity: 0, y: 50, scale: 0.8 }}
+                    animate={{ opacity: 1, y: lift, rotate: rot, scale: 1 }}
+                    exit={{ opacity: 0, y: -36, scale: 0.85 }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+                    drag={canPlay}
+                    dragSnapToOrigin
+                    dragElastic={0.18}
+                    onDragStart={() => { setIsDragging(true); setHoveredCardId(card.id); }}
+                    onDragEnd={(e, info) => handleDragEnd(e, info, card)}
+                    whileDrag={{ scale: 1.08, rotate: 0, zIndex: 60, cursor: 'grabbing' }}
+                    whileHover={{ y: lift - 42, rotate: 0, scale: 1.12, zIndex: 50 }}
+                    onHoverStart={() => setHoveredCardId(card.id)}
+                    onHoverEnd={() => { if (!isDragging) setHoveredCardId(null); }}
+                    className={canPlay ? 'cursor-grab' : ''}
+                    style={{ marginLeft: i > 0 ? -28 : 0, zIndex: i, touchAction: 'none', transformOrigin: 'bottom center' }}
+                  >
+                    <PlayingCard card={card} size="lg" />
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
             {gameView.myHand.length === 0 && (
-              <p className="text-sm font-medium opacity-50">Elde kart yok</p>
+              <p className="text-sm font-medium text-arcade-cream/50 self-center">Elde kart yok</p>
             )}
           </div>
 
-          {/* Action row */}
-          <div className="flex justify-center">
+          {/* Action hint */}
+          <div className="h-10 flex items-center justify-center">
             {canDraw && (
-              <button onClick={handleDrawCard} className="btn-arcade px-8 py-3">Kart çek</button>
+              <button onClick={handleDrawCard} className="btn-arcade px-7 py-2.5 text-sm">Desteden kart çek</button>
             )}
             {canPlay && (
-              <p className="text-sm font-medium opacity-60 py-2">Bir kartı yukarıdaki masaya sürükle</p>
+              <p className="text-sm font-medium text-arcade-cream/55">Kartı yukarıdaki masaya sürükle</p>
             )}
             {(!isMyTurn || gameView.hasPendingAction) && (
-              <div className="flex items-center gap-2 text-sm font-medium opacity-55 py-2">
+              <div className="flex items-center gap-2 text-sm font-medium text-arcade-cream/50">
                 <motion.span
                   animate={{ scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1.2 }}
-                  className="w-2 h-2 rounded-full bg-arcade-ink/60"
+                  className="w-2 h-2 rounded-full bg-arcade-cream/40"
                 />
                 {gameView.hasPendingAction && isMyTurn ? 'Aksiyonunu seç…' : 'Diğer oyuncunun sırası…'}
               </div>
@@ -852,6 +856,32 @@ export default function GamePage() {
             onAccept={() => { playClick(); socket.emit('action_response', { roomCode, type: 'grave_digger', accept: true }); setModal(null); }}
             onDecline={() => { playClick(); socket.emit('action_response', { roomCode, type: 'grave_digger', accept: false }); setModal(null); }}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Leave-game confirmation */}
+      <AnimatePresence>
+        {showLeaveConfirm && (
+          <Overlay>
+            <h3 className="font-display font-extrabold text-xl mb-1">Oyundan ayrıl?</h3>
+            <p className="text-sm font-medium opacity-75 mb-5">
+              Ayrılırsan bu oyunda <span className="font-bold text-arcade-coral">otomatik olarak elenirsin</span> (kaybetmiş sayılırsın). Emin misin?
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => { playClick(); setShowLeaveConfirm(false); }}
+                className="btn-arcade btn-arcade--cream flex-1 py-2.5"
+              >
+                Vazgeç
+              </button>
+              <button
+                onClick={() => { setShowLeaveConfirm(false); handleLeave(); }}
+                className="btn-arcade flex-1 py-2.5"
+              >
+                Evet, ayrıl
+              </button>
+            </div>
+          </Overlay>
         )}
       </AnimatePresence>
 

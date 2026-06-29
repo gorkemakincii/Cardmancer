@@ -1,4 +1,6 @@
+import type { CSSProperties } from 'react';
 import type { Card } from '../types';
+import cardBackUrl from '../assets/card-back.png';
 
 // ── Card metadata ─────────────────────────────────────────────────────────────
 // Card artwork lives in ../assets/cards/{value}.png (cute enamel-pin yokai/ninja
@@ -51,56 +53,135 @@ export const CARD_DESC: Record<number, string> = {
   10: '⚠️ Oynayan elenir!',
 };
 
-// ── Face-down card (placeholder back) ──────────────────────────────────────────
+// ── Card sizing ─────────────────────────────────────────────────────────────
+// One design, three widths. All inner sizing is in cqw (% of card width) so the
+// proportions hold at every size — the card is its own container (container-type).
 
-export function FaceDownCard({ size = 'sm' }: { size?: 'sm' | 'md' }) {
-  const dim = size === 'sm' ? 'w-10 h-14 rounded-lg border-2' : 'w-20 h-28 rounded-xl border-[3px]';
+type CardSize = 'sm' | 'md' | 'lg';
+const CARD_WIDTH: Record<CardSize, string> = {
+  sm: 'w-12',        // ~48px — table / face-up cascades / end-of-game hands
+  md: 'w-28',        // ~112px — modals, deck pile, game-over winner
+  lg: 'w-[150px]',   // hand cards
+};
+
+// Outer sizer: fixes the card's width + 5:7 ratio and declares it the query
+// container. The gold frame lives in a child so its cqw padding resolves against
+// THIS element's width (cqw refers to the nearest ancestor container, not self).
+function cardSizer(size: CardSize, extra = '') {
+  return `${CARD_WIDTH[size]} aspect-[5/7] shrink-0 select-none relative ${extra}`;
+}
+const SIZER_STYLE: CSSProperties = { containerType: 'size' };
+
+// ── Face-down card (shared "CARDMANCER" back) ──────────────────────────────────
+
+export function FaceDownCard({ size = 'sm' }: { size?: CardSize }) {
   return (
-    <div className={`${dim} border-arcade-ink bg-arcade-ink relative overflow-hidden flex items-center justify-center shrink-0 select-none`}>
-      <div className="absolute inset-1 rounded-md border border-arcade-cream/15" />
-      <span className={`font-display font-extrabold text-arcade-cream/30 ${size === 'sm' ? 'text-base' : 'text-2xl'}`}>?</span>
+    <div className={cardSizer(size)} style={SIZER_STYLE}>
+      <div className="w-full h-full rounded-[7%] cm-gold shadow-hard-sm relative" style={{ padding: '4cqw' }}>
+        <div className="w-full h-full rounded-[5%] overflow-hidden relative bg-arcade-bg">
+          <img src={cardBackUrl} alt="" draggable={false} className="w-full h-full object-cover select-none" />
+          {/* Crisp CARDMANCER wordmark overlaid on the AI-generated back */}
+          <div className="absolute inset-x-[4%] bottom-[6%] flex justify-center">
+            <span
+              className="font-display font-extrabold tracking-tight text-[#FCE08A] leading-none whitespace-nowrap"
+              style={{ fontSize: '9cqw', textShadow: '0 1px 2px #14110F, 1px 1px 0 #14110F' }}
+            >
+              CARDMANCER
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-// ── Playing card (placeholder face) ─────────────────────────────────────────────
+// ── Playing card (Hearthstone-style gold face) ──────────────────────────────────
 
 interface PlayingCardProps {
   card: Card;
-  size?: 'sm' | 'md';
+  size?: CardSize;
 }
 
 export function PlayingCard({ card, size = 'md' }: PlayingCardProps) {
   const name = CARD_CONFIG[card.value]?.name ?? '';
+  const desc = CARD_DESC[card.value] ?? '';
   const art = CARD_ART[card.value];
 
+  // Compact mini — gold frame + art + corner value gem, no banner/description.
   if (size === 'sm') {
     return (
-      <div className="w-10 h-14 rounded-lg border-2 border-arcade-ink bg-arcade-cream text-arcade-ink relative overflow-hidden shrink-0 select-none flex items-center justify-center">
-        <span className="absolute top-0.5 left-1 font-display font-extrabold text-[10px] leading-none">{card.value}</span>
-        <span className="font-display font-extrabold text-xl leading-none">{card.value}</span>
+      <div className={cardSizer(size)} style={SIZER_STYLE}>
+        <div className="w-full h-full rounded-[8%] cm-gold shadow-hard-sm relative" style={{ padding: '5cqw' }}>
+          <div className="w-full h-full rounded-[6%] overflow-hidden relative bg-arcade-bg cm-parchment">
+            {art ? (
+              <img src={art} alt={name} draggable={false} className="w-full h-full object-cover select-none" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center font-display font-extrabold text-[#4A3712]" style={{ fontSize: '34cqw' }}>
+                {card.value}
+              </div>
+            )}
+          </div>
+          <div
+            className="cm-gem absolute -left-[6%] -top-[6%] rounded-full flex items-center justify-center border-2 border-[#FCE08A] shadow-hard-sm"
+            style={{ width: '40cqw', height: '40cqw' }}
+          >
+            <span className="font-display font-extrabold text-white leading-none" style={{ fontSize: '22cqw', textShadow: '0 1px 1px #14110F' }}>
+              {card.value}
+            </span>
+          </div>
+        </div>
       </div>
     );
   }
 
-  // md — placeholder face: big value, name strip, art slot to be filled in later
+  // Full Hearthstone-style card (md / lg) — art on top, name ribbon, description.
   return (
-    <div className="w-20 h-28 rounded-xl border-[3px] border-arcade-ink bg-arcade-cream text-arcade-ink shadow-hard-sm relative overflow-hidden select-none">
-      <span className="absolute top-1.5 left-2 font-display font-extrabold text-sm leading-none">{card.value}</span>
-      <span className="absolute bottom-1.5 right-2 font-display font-extrabold text-sm leading-none rotate-180">{card.value}</span>
+    <div className={cardSizer(size)} style={SIZER_STYLE}>
+      <div className="w-full h-full rounded-[7%] cm-gold shadow-hard-sm relative" style={{ padding: '4cqw' }}>
+        {/* Parchment paper */}
+        <div className="w-full h-full rounded-[5%] cm-parchment relative overflow-hidden" style={{ boxShadow: 'inset 0 0 0 1px rgba(122,90,18,0.55)' }}>
+          {/* Art window */}
+          <div
+            className="absolute left-[7%] right-[7%] top-[6%] h-[50%] rounded-[12%] overflow-hidden bg-arcade-bg"
+            style={{ boxShadow: '0 0 0 2px #8A6314, 0 0 0 4px rgba(253,232,154,0.7)' }}
+          >
+            {art ? (
+              <img src={art} alt={name} draggable={false} className="w-full h-full object-cover select-none" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center font-display font-extrabold text-arcade-cream/80" style={{ fontSize: '26cqw' }}>
+                {card.value}
+              </div>
+            )}
+          </div>
 
-      {/* Art window — illustrated card art, or a value placeholder when missing */}
-      <div className="absolute inset-x-2 top-5 bottom-6 rounded-md overflow-hidden border-2 border-arcade-ink/70 bg-arcade-bg flex items-center justify-center">
-        {art ? (
-          <img src={art} alt={name} draggable={false} className="w-full h-full object-cover select-none" />
-        ) : (
-          <span className="font-display font-extrabold text-3xl text-arcade-cream/80">{card.value}</span>
-        )}
+          {/* Name ribbon */}
+          <div
+            className="cm-ribbon absolute left-[1%] right-[1%] top-[57%] h-[13%] flex items-center justify-center border-y-2 border-[#8A6314]"
+            style={{ boxShadow: '0 2px 4px rgba(20,17,15,0.35)' }}
+          >
+            <span className="font-display font-extrabold text-[#3A2A08] leading-none text-center px-[4%] truncate" style={{ fontSize: '9cqw' }}>
+              {name}
+            </span>
+          </div>
+
+          {/* Description */}
+          <div className="absolute left-[7%] right-[7%] top-[72%] bottom-[5%] flex items-center justify-center text-center">
+            <span className="text-[#4A3712] font-semibold leading-tight" style={{ fontSize: '6.4cqw' }}>
+              {desc}
+            </span>
+          </div>
+        </div>
+
+        {/* Value cost gem — top-left */}
+        <div
+          className="cm-gem absolute -left-[4%] -top-[4%] rounded-full flex items-center justify-center border-2 border-[#FCE08A] shadow-hard-sm"
+          style={{ width: '30cqw', height: '30cqw' }}
+        >
+          <span className="font-display font-extrabold text-white leading-none" style={{ fontSize: '17cqw', textShadow: '0 1px 2px #14110F' }}>
+            {card.value}
+          </span>
+        </div>
       </div>
-
-      <span className="absolute bottom-1 inset-x-0 text-center text-[7px] font-bold uppercase tracking-wide opacity-55 px-1 leading-tight">
-        {name}
-      </span>
     </div>
   );
 }
